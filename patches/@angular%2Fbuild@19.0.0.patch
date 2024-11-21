@@ -1,0 +1,49 @@
+diff --git a/src/utils/server-rendering/routes-extractor-worker.js b/src/utils/server-rendering/routes-extractor-worker.js
+index ee46c3d260cdec0365eca728a0d043b9645a3d8f..8486ebf8298493752565d5f3b8098fd172d3ee59 100644
+--- a/src/utils/server-rendering/routes-extractor-worker.js
++++ b/src/utils/server-rendering/routes-extractor-worker.js
+@@ -1,11 +1,4 @@
+ "use strict";
+-/**
+- * @license
+- * Copyright Google LLC All Rights Reserved.
+- *
+- * Use of this source code is governed by an MIT-style license that can be
+- * found in the LICENSE file at https://angular.dev/license
+- */
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const worker_threads_1 = require("worker_threads");
+ const schema_1 = require("../../builders/application/schema");
+@@ -19,19 +12,17 @@ const { outputMode, hasSsrEntry } = worker_threads_1.workerData;
+ let serverURL = launch_server_1.DEFAULT_URL;
+ /** Renders an application based on a provided options. */
+ async function extractRoutes() {
+-    const { ɵextractRoutesAndCreateRouteTree: extractRoutesAndCreateRouteTree } = await (0, load_esm_from_memory_1.loadEsmModuleFromMemory)('./main.server.mjs');
+-    const { routeTree, appShellRoute, errors } = await extractRoutesAndCreateRouteTree(serverURL, undefined /** manifest */, true /** invokeGetPrerenderParams */, outputMode === schema_1.OutputMode.Server /** includePrerenderFallbackRoutes */);
+-    return {
+-        errors,
+-        appShellRoute,
+-        serializedRouteTree: routeTree.toObject(),
+-    };
+-}
+-async function initialize() {
+-    if (outputMode !== undefined && hasSsrEntry) {
+-        serverURL = await (0, launch_server_1.launchServer)();
+-    }
+-    (0, fetch_patch_1.patchFetchToLoadInMemoryAssets)(serverURL);
+-    return extractRoutes;
++  if (outputMode !== undefined && hasSsrEntry) {
++    serverURL = await (0, launch_server_1.launchServer)();
++  }
++  (0, fetch_patch_1.patchFetchToLoadInMemoryAssets)(serverURL);
++
++  const { ɵextractRoutesAndCreateRouteTree: extractRoutesAndCreateRouteTree } = await (0, load_esm_from_memory_1.loadEsmModuleFromMemory)('./main.server.mjs');
++  const { routeTree, appShellRoute, errors } = await extractRoutesAndCreateRouteTree(serverURL, undefined /** manifest */, true /** invokeGetPrerenderParams */, outputMode === schema_1.OutputMode.Server /** includePrerenderFallbackRoutes */);
++  return {
++    errors,
++    appShellRoute,
++    serializedRouteTree: routeTree.toObject(),
++  };
+ }
+-exports.default = initialize();
++exports.default = extractRoutes;
